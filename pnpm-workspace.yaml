@@ -3,8 +3,8 @@ allowBuilds:
   unrs-resolver: false
 
 minimumReleaseAgeExclude:
-  - "@next/*"
-  - "@oxfmt/*"
+  - '@next/*'
+  - '@oxfmt/*'
   - next
   - oxfmt
   - react@19.2.8
