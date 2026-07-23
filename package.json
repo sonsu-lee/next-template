@@ -9,6 +9,7 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
+    "format": "oxfmt",
     "start": "next start",
     "typecheck": "tsc --noEmit"
   },
@@ -22,6 +23,7 @@
     "@types/react": "^19.2.17",
     "@types/react-dom": "^19.2.3",
     "babel-plugin-react-compiler": "1.0.0",
+    "oxfmt": "0.60.0",
     "typescript": "^7.0.2"
   }
 }
