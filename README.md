@@ -1,36 +1,97 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# next-template
 
-## Getting Started
+A single Next.js application template for small products deployed on Vercel.
+The app, UI, and server entry points live in one project without a workspace
+or a separate backend service.
 
-First, run the development server:
+## Stack
+
+- Next.js canary with React Compiler
+- React 19
+- TypeScript 7
+- StyleX
+- TanStack Query
+- XState
+- Oxfmt and Oxlint
+- pnpm 11
+
+## Requirements
+
+- Node.js `^20.19.0` or `>=22.12.0`
+- Corepack
+
+The exact pnpm release is declared in `package.json`.
+
+## Start
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
+corepack enable
+pnpm install
 pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000).
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Commands
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```bash
+pnpm dev
+pnpm build
+pnpm start
+pnpm format
+pnpm format:check
+pnpm lint
+pnpm lint:fix
+pnpm typecheck
+```
 
-## Learn More
+All commands run directly against the root application. There is no Turbo
+task layer, workspace filter, or internal package build.
 
-To learn more about Next.js, take a look at the following resources:
+## Structure
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```text
+src/
+├── app/       # App Router pages, layouts, providers, and server entry points
+├── examples/  # Compile-checked reference implementations
+└── lib/       # Shared application primitives
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+The starter page stays intentionally small. The profile flow under
+`src/examples` demonstrates how TanStack Query and XState can work together
+without becoming part of the default route.
 
-## Deploy on Vercel
+## Server boundaries
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Keep product code inside Next.js until a concrete requirement justifies
+another boundary:
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- Use Server Components for server-side reads used during rendering.
+- Use Server Actions for mutations initiated by the application UI.
+- Use Route Handlers for public HTTP APIs, webhooks, callbacks, and file
+  responses.
+- Import shared server logic directly from Server Components instead of
+  calling the application's own Route Handlers over HTTP.
+
+If an API grows enough to need shared HTTP middleware, versioned routing, or
+portable handlers, mount Hono from a catch-all Route Handler such as
+`src/app/api/[[...route]]/route.ts`. Hono is not installed by default.
+
+Vercel Cron Jobs and Queues should be added when the product needs scheduled
+or durable background work. They are intentionally not preconfigured in the
+base template.
+
+## Conventions
+
+- [StyleX authoring](docs/agent-references/stylex-authoring.md)
+- [Frontend state and data flow](docs/frontend/state-management.md)
+
+TanStack Query owns server data and cache state. XState owns local UI state,
+workflows, and editable drafts. Keep values derived for rendering out of both
+stores when they can be computed from their source.
+
+## Deploy
+
+Import the repository into [Vercel](https://vercel.com/new) as a standard
+Next.js project. The repository root is the application root, so no monorepo
+root-directory or workspace configuration is required.
