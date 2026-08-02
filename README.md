@@ -17,15 +17,16 @@ or a separate backend service.
 
 ## Requirements
 
-- Node.js `^20.19.0` or `>=22.12.0`
-- Corepack
+- Node.js `24.18.1` for local development (`24.x` on Vercel)
+- pnpm `11.18.0`
 
-The exact pnpm release is declared in `package.json`.
+The local toolchain is pinned in `mise.toml`. The deployment-compatible Node.js
+range and the exact pnpm release are declared in `package.json`.
 
 ## Start
 
 ```bash
-corepack enable
+mise install
 pnpm install
 pnpm dev
 ```
