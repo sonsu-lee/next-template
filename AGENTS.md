@@ -1,7 +1,11 @@
 <!-- BEGIN:nextjs-agent-rules -->
+
 # This is NOT the Next.js you know
 
-This version has breaking changes — APIs, conventions, and file structure may all differ from your training data. Read the relevant guide in `node_modules/next/dist/docs/` before writing any code. Heed deprecation notices.
+This version has breaking changes — APIs, conventions, and file structure may all differ from your training data. Read the relevant guide in `node_modules/next/dist/docs/` (resolved from this file's directory; in monorepos the `next` package may not be visible from the repo root) before writing any code. Heed deprecation notices.
+
+This block is written and re-added by `next dev` — verify at `node_modules/next/dist/server/lib/generate-agent-files.js`. Removing it from a diff only re-creates the uncommitted change; committing it with your work keeps the tree clean.
+
 <!-- END:nextjs-agent-rules -->
 
 ## StyleX
@@ -28,3 +32,18 @@ asynchronous actors, or prefetching under `src`, read and follow
   TanStack Query hook constraints behind the query adapter boundary.
 - Keep flow and API dependencies referentially stable; inject clients through
   a flow factory rather than storing them in machine context.
+
+## Vercel and template boundaries
+
+Before adding or reviewing a Vercel integration, use current official Vercel
+documentation or official Vercel agent tooling when it is available.
+
+- Keep the base deployable with `pnpm check` and without runtime credentials.
+- Add platform dependencies, routes, and `vercel.json` entries only for a
+  selected product feature; do not preconfigure speculative integrations.
+- Never commit secret values. Document required names and safe placeholders in
+  `.env.example`, then keep real values in the deployment environment.
+- Treat agent skills and plugins as contributor tooling. Do not vendor or
+  install them into the project unless the user explicitly requests a
+  project-scoped installation.
+- Run `pnpm check` before handing off a template or Vercel integration change.

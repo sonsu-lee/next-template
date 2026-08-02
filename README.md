@@ -49,6 +49,7 @@ Open [http://localhost:3000](http://localhost:3000).
 
 ```bash
 pnpm dev
+pnpm check
 pnpm build
 pnpm start
 pnpm format
@@ -60,6 +61,9 @@ pnpm typecheck
 
 All commands run directly against the root application. There is no Turbo
 task layer, workspace filter, or internal package build.
+
+`pnpm check` is the release gate. It verifies formatting, lint rules, types,
+and a credential-free production build in that order.
 
 ## Structure
 
@@ -73,6 +77,21 @@ src/
 The starter page stays intentionally small. The profile flow under
 `src/examples` demonstrates how TanStack Query and XState can work together
 without becoming part of the default route.
+
+## Template contract
+
+The tracked base stays deployable before any optional Vercel product is
+configured:
+
+- A clean clone passes `pnpm install` followed by `pnpm check` without secrets.
+- Optional integrations do not leave dormant dependencies, routes, or
+  `vercel.json` entries in the base.
+- Environment examples contain names and safe placeholders, never credentials.
+- Analytics, Speed Insights, Cron, Blob, observability, and similar platform
+  features are added only when a product chooses them.
+
+Keep the repository root as the application and deployment root. Introduce a
+workspace or another service only when a concrete product boundary requires it.
 
 ## Cache Components
 
@@ -115,3 +134,18 @@ stores when they can be computed from their source.
 Import the repository into [Vercel](https://vercel.com/new) as a standard
 Next.js project. The repository root is the application root, so no monorepo
 root-directory or workspace configuration is required.
+
+No Vercel integration, secret, or dashboard toggle is required before the
+first deployment. Keep **Automatically expose System Environment Variables**
+enabled so Preview deployments can identify themselves and opt out of search
+indexing.
+
+Set `SITE_URL` to the production HTTP(S) origin when you need to override
+Vercel's production-domain system variable, such as when selecting a custom
+canonical domain. The value must be an origin without a path, query, fragment,
+or credentials. Preview deployments publish `noindex, nofollow` metadata and a
+disallowing `robots.txt`; Production deployments remain indexable.
+
+After deployment, configure only the platform resources the application has
+actually adopted. Record required variable names in `.env.example`, keep their
+values in Vercel, and run `pnpm check` before pushing the integration.
