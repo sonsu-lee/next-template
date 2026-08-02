@@ -6,7 +6,7 @@ or a separate backend service.
 
 ## Stack
 
-- Next.js canary with React Compiler
+- Next.js canary with React Compiler and Cache Components
 - React
 - TypeScript
 - StyleX
@@ -73,6 +73,13 @@ src/
 The starter page stays intentionally small. The profile flow under
 `src/examples` demonstrates how TanStack Query and XState can work together
 without becoming part of the default route.
+
+## Cache Components
+
+Cache Components are enabled in `next.config.ts`. Dynamic data stays uncached
+by default; add `use cache` only where the product has an explicit caching
+policy. See the [Next.js Cache Components guide](https://nextjs.org/docs/app/getting-started/cache-components)
+before introducing cached boundaries.
 
 ## Server boundaries
 
