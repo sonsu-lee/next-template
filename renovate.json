@@ -1,0 +1,26 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": [
+    "config:best-practices",
+    ":enableVulnerabilityAlerts",
+    "customManagers:dockerfileVersions",
+    ":followTag(next, canary)"
+  ],
+  "packageRules": [
+    {
+      "description": "Keep fast-moving packages aligned with pnpm release-age exclusions",
+      "matchDatasources": ["npm"],
+      "matchPackageNames": [
+        "@next/*",
+        "@oxfmt/*",
+        "@oxlint/*",
+        "@oxlint-tsgolint/*",
+        "next",
+        "oxfmt",
+        "oxlint",
+        "oxlint-tsgolint"
+      ],
+      "minimumReleaseAge": null
+    }
+  ]
+}

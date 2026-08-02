@@ -7,21 +7,33 @@ or a separate backend service.
 ## Stack
 
 - Next.js canary with React Compiler
-- React 19
-- TypeScript 7
+- React
+- TypeScript
 - StyleX
 - TanStack Query
 - XState
 - Oxfmt and Oxlint
-- pnpm 11
+- pnpm
 
 ## Requirements
 
-- Node.js `24.18.1` for local development (`24.x` on Vercel)
-- pnpm `11.18.0`
+- Node.js, pinned in `mise.toml` for local development and declared in
+  `package.json` for Vercel
+- pnpm, pinned in both `mise.toml` and `package.json`
 
 The local toolchain is pinned in `mise.toml`. The deployment-compatible Node.js
 range and the exact pnpm release are declared in `package.json`.
+
+## Dependency updates
+
+Renovate tracks the package manifest, pnpm lockfile, mise tools, and standard
+Docker image references. Annotate non-image Dockerfile tool versions so the
+Dockerfile version manager can identify their release source:
+
+```dockerfile
+# renovate: datasource=github-releases depName=owner/tool
+ARG TOOL_VERSION=1.2.3
+```
 
 ## Start
 
