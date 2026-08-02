@@ -1,6 +1,8 @@
 import type { Metadata } from 'next';
 import { Geist } from 'next/font/google';
 
+import { getSiteUrl, isIndexableDeployment, siteConfig } from '@/lib/site';
+
 import './globals.css';
 import { Providers } from './providers';
 
@@ -10,8 +12,24 @@ const geistSans = Geist({
 });
 
 export const metadata: Metadata = {
-  title: 'Next Template',
-  description: 'A focused Next.js foundation for small products.',
+  metadataBase: getSiteUrl(),
+  title: {
+    default: siteConfig.name,
+    template: `%s | ${siteConfig.name}`,
+  },
+  description: siteConfig.description,
+  openGraph: {
+    description: siteConfig.description,
+    siteName: siteConfig.name,
+    title: siteConfig.name,
+    type: 'website',
+  },
+  robots: isIndexableDeployment() ? { follow: true, index: true } : { follow: false, index: false },
+  twitter: {
+    card: 'summary',
+    description: siteConfig.description,
+    title: siteConfig.name,
+  },
 };
 
 export default function RootLayout({
