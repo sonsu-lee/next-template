@@ -1,4 +1,20 @@
 import { create, props } from '@stylexjs/stylex';
+import type { Metadata } from 'next';
+
+import { siteConfig } from '@/lib/site';
+
+const metadata: Metadata = {
+  alternates: {
+    canonical: '/',
+  },
+  openGraph: {
+    description: siteConfig.description,
+    siteName: siteConfig.name,
+    title: siteConfig.name,
+    type: 'website',
+    url: '/',
+  },
+};
 
 const styles = create({
   page: {
@@ -75,3 +91,5 @@ export default function Home() {
     </main>
   );
 }
+
+export { metadata };
