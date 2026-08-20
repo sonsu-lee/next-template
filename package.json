@@ -17,7 +17,7 @@
     "@stylexjs/stylex": "^0.19.0",
     "@tanstack/react-query": "^5.101.4",
     "@xstate/react": "^6.1.0",
-    "next": "16.3.0-canary.93",
+    "next": "16.3.1",
     "react": "19.2.8",
     "react-dom": "19.2.8",
     "xstate": "^5.32.5"
@@ -26,18 +26,18 @@
     "@stylexjs/babel-plugin": "^0.19.0",
     "@stylexjs/postcss-plugin": "^0.19.0",
     "@types/node": "^24.13.3",
-    "@types/react": "^19.2.17",
-    "@types/react-dom": "^19.2.3",
+    "@types/react": "^19.2.18",
+    "@types/react-dom": "^19.2.4",
     "autoprefixer": "^10.5.4",
     "babel-plugin-react-compiler": "1.0.0",
-    "oxfmt": "0.60.0",
-    "oxlint": "1.75.0",
+    "oxfmt": "0.64.0",
+    "oxlint": "1.79.0",
     "oxlint-tsgolint": "7.0.2001",
     "typescript": "^7.0.2"
   },
   "engines": {
     "node": "24.x",
-    "pnpm": "11.18.0"
+    "pnpm": "11.22.0"
   },
-  "packageManager": "pnpm@11.18.0+sha512.33d83c77da82f49fba836925c6f1b841181ec3132b670639bd012f7075f5c7cf634c5f870147c19aae7478fac01df09d8892e880454896edd23ee9b33757563c"
+  "packageManager": "pnpm@11.22.0+sha512.H/hwxMYTPf2I+yr8Rt0T1H8JyXlLQ4xv20fKmMrzvBY4HuC+k6CRuOOCTPAfiJ9G19niCRD7C+GrD7W6qA3WIQ=="
 }
