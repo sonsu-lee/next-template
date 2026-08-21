@@ -79,10 +79,9 @@ pnpm storage:down
 ```
 
 `storage:down` keeps the named volume. Run
-`docker compose --env-file .env.local down --volumes` only when you intentionally
-want to delete all locally stored objects. RustFS is a local development
-dependency; it is not started during `pnpm check` and does not add a Vercel
-runtime requirement.
+`pnpm storage:down -- --volumes` only when you intentionally want to delete all
+locally stored objects. RustFS is a local development dependency; it is not
+started during `pnpm check` and does not add a Vercel runtime requirement.
 
 ## Commands
 
