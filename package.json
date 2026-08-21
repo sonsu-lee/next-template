@@ -11,7 +11,7 @@
     "lint": "oxlint .",
     "lint:fix": "oxlint . --fix",
     "start": "next start",
-    "storage:down": "node scripts/storage-down.mjs",
+    "storage:down": "docker compose --env-file .env.local down",
     "storage:logs": "docker compose --env-file .env.local logs --follow rustfs",
     "storage:up": "docker compose --env-file .env.local up --detach --wait --wait-timeout 60 rustfs",
     "typecheck": "tsc --noEmit"
