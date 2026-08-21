@@ -57,7 +57,7 @@ Create the ignored local environment file and set both RustFS credential values
 to unique values:
 
 ```bash
-cp .env.example .env.local
+cp .env.example .env
 ```
 
 Start RustFS and verify its S3 API health endpoint:
@@ -71,7 +71,8 @@ The S3 API is available at [http://localhost:9000](http://localhost:9000), and
 the administration console is available at
 [http://localhost:9001](http://localhost:9001). Both listeners bind to the
 development machine only. Use the `RUSTFS_ACCESS_KEY` and `RUSTFS_SECRET_KEY`
-values from `.env.local` to sign in or configure an S3-compatible client.
+values from your environment or `.env` to sign in or configure an S3-compatible
+client.
 
 ```bash
 pnpm storage:logs
