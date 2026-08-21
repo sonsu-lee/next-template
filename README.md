@@ -17,19 +17,22 @@ or a separate backend service.
 
 ## Requirements
 
-- Node.js, pinned in `mise.toml` for local development and declared in
+- [Nodeup](https://nodeup.delino.io/installation), installed globally for local
+  development
+- Node.js, pinned in `.node-version` for local development and declared in
   `package.json` for Vercel
-- pnpm, pinned in both `mise.toml` and `package.json`
+- pnpm, pinned in `package.json` and dispatched by Nodeup
 - Docker Engine with Docker Compose, only when running local object storage
 
-The local toolchain is pinned in `mise.toml`. The deployment-compatible Node.js
-range and the exact pnpm release are declared in `package.json`.
+The exact local Node.js release is pinned in `.node-version`. The
+deployment-compatible Node.js range and the exact pnpm release are declared in
+`package.json`.
 
 ## Dependency updates
 
-Renovate tracks the package manifest, pnpm lockfile, mise tools, and standard
-Docker image references. Annotate non-image Dockerfile tool versions so the
-Dockerfile version manager can identify their release source:
+Renovate tracks the package manifest, pnpm lockfile, `.node-version`, and
+standard Docker image references. Annotate non-image Dockerfile tool versions
+so the Dockerfile version manager can identify their release source:
 
 ```dockerfile
 # renovate: datasource=github-releases depName=owner/tool
@@ -39,12 +42,101 @@ ARG TOOL_VERSION=1.2.3
 ## Start
 
 ```bash
-mise install
+brew install delinoio/tap/nodeup
+export PATH="$HOME/.local/bin:$PATH"
+./scripts/setup-nodeup.sh
 pnpm install
 pnpm dev
 ```
 
+Add `$HOME/.local/bin` to your shell profile once so the Nodeup shims remain
+available in future shells. The setup script installs the pinned Node.js
+runtime, registers the current clone or worktree as a directory override, and
+creates the `node`, `npm`, `npx`, `yarn`, and `pnpm` shims. Run it once for each
+clone or worktree because Nodeup stores overrides by absolute path.
+
+Nodeup resolves the exact `packageManager` value in `package.json` and runs pnpm
+through the selected runtime's `npm exec`. The first pnpm invocation can
+therefore depend on npm registry access or a warm npm cache.
+
 Open [http://localhost:3000](http://localhost:3000).
+
+## Codex Cloud
+
+Codex Cloud setup runs in a separate Bash session from the agent, so its PATH
+export must also be persisted in `~/.bashrc`. Configure the environment with
+the following Setup script. It builds the pinned Nodeup release with the Rust
+toolchain from the universal image, then reuses the repository bootstrap and
+installs dependencies while setup internet access is available:
+
+```bash
+set -euo pipefail
+
+NODEUP_VERSION="0.2.0"
+LOCAL_ROOT="$HOME/.local"
+BIN_DIR="$LOCAL_ROOT/bin"
+NODEUP_BIN="$BIN_DIR/nodeup"
+PATH_LINE='export PATH="$HOME/.local/bin:$PATH"'
+
+repo_root="$(git rev-parse --show-toplevel)"
+
+mkdir -p "$BIN_DIR"
+touch "$HOME/.bashrc"
+
+grep -qxF "$PATH_LINE" "$HOME/.bashrc" ||
+  printf '%s\n' "$PATH_LINE" >> "$HOME/.bashrc"
+
+export PATH="$BIN_DIR:$PATH"
+
+if ! command -v cargo >/dev/null 2>&1 && [[ -f "$HOME/.cargo/env" ]]; then
+  # shellcheck disable=SC1091
+  source "$HOME/.cargo/env"
+fi
+
+if ! command -v cargo >/dev/null 2>&1; then
+  printf 'error: cargo is required to install nodeup in Codex Cloud\n' >&2
+  exit 1
+fi
+
+if [[ ! -x "$NODEUP_BIN" ]] ||
+  [[ "$("$NODEUP_BIN" --version)" != "nodeup $NODEUP_VERSION" ]]; then
+  cargo install \
+    --locked \
+    --force \
+    --version "$NODEUP_VERSION" \
+    --root "$LOCAL_ROOT" \
+    nodeup
+fi
+
+hash -r
+
+cd "$repo_root"
+./scripts/setup-nodeup.sh
+pnpm install --frozen-lockfile
+```
+
+Configure this Maintenance script for cached containers. It reapplies the
+runtime override for the checked-out branch and refreshes dependencies when
+`.node-version` or `pnpm-lock.yaml` changes:
+
+```bash
+set -euo pipefail
+
+export PATH="$HOME/.local/bin:$PATH"
+
+repo_root="$(git rev-parse --show-toplevel)"
+
+cd "$repo_root"
+./scripts/setup-nodeup.sh
+pnpm install --frozen-lockfile
+```
+
+Changing either Cloud script invalidates the environment cache. If a cached
+container is otherwise incompatible or its Nodeup binary is missing, use
+**Reset cache** in the environment settings so the Setup script runs again.
+See the
+[Codex Cloud environment guide](https://learn.chatgpt.com/docs/environments/cloud-environment)
+for setup sessions, maintenance scripts, internet access, and cache behavior.
 
 ## Local object storage
 
