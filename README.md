@@ -20,6 +20,7 @@ or a separate backend service.
 - Node.js, pinned in `mise.toml` for local development and declared in
   `package.json` for Vercel
 - pnpm, pinned in both `mise.toml` and `package.json`
+- Docker Engine with Docker Compose, only when running local object storage
 
 The local toolchain is pinned in `mise.toml`. The deployment-compatible Node.js
 range and the exact pnpm release are declared in `package.json`.
@@ -45,6 +46,44 @@ pnpm dev
 
 Open [http://localhost:3000](http://localhost:3000).
 
+## Local object storage
+
+Local object storage runs as a single-node
+[RustFS](https://docs.rustfs.com/en/installation/container/docker) service in
+Docker. Its object data is kept in a named volume, so replacing or stopping the
+container does not remove stored objects.
+
+Create the ignored local environment file and set both RustFS credential values
+to unique values:
+
+```bash
+cp .env.example .env
+```
+
+Start RustFS and verify its S3 API health endpoint:
+
+```bash
+pnpm storage:up
+curl --fail http://localhost:9000/health
+```
+
+The S3 API is available at [http://localhost:9000](http://localhost:9000), and
+the administration console is available at
+[http://localhost:9001](http://localhost:9001). Both listeners bind to the
+development machine only. Use the `RUSTFS_ACCESS_KEY` and `RUSTFS_SECRET_KEY`
+values from your environment or `.env` to sign in or configure an S3-compatible
+client.
+
+```bash
+pnpm storage:logs
+pnpm storage:down
+```
+
+`storage:down` keeps the named volume. Run
+`pnpm storage:down -- --volumes` only when you intentionally want to delete all
+locally stored objects. RustFS is a local development dependency; it is not
+started during `pnpm check` and does not add a Vercel runtime requirement.
+
 ## Commands
 
 ```bash
@@ -56,6 +95,9 @@ pnpm format
 pnpm format:check
 pnpm lint
 pnpm lint:fix
+pnpm storage:up
+pnpm storage:logs
+pnpm storage:down
 pnpm typecheck
 ```
 

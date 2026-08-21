@@ -1,0 +1,28 @@
+services:
+  rustfs:
+    # RustFS v1.0.0-beta.12; the digest is authoritative for reproducible local storage.
+    image: rustfs/rustfs:1.0.0-beta.12@sha256:41fe89380f4120a337790c02af192c3fe7bb55c3edc2e6e9357b487b47c6ab21
+    restart: unless-stopped
+    command: /data
+    environment:
+      RUSTFS_ACCESS_KEY: ${RUSTFS_ACCESS_KEY:?Set RUSTFS_ACCESS_KEY in the environment or .env}
+      RUSTFS_SECRET_KEY: ${RUSTFS_SECRET_KEY:?Set RUSTFS_SECRET_KEY in the environment or .env}
+      RUSTFS_ADDRESS: ':9000'
+      RUSTFS_CONSOLE_ADDRESS: ':9001'
+      RUSTFS_CONSOLE_ENABLE: 'true'
+      RUSTFS_OBS_LOGGER_LEVEL: error
+      RUSTFS_OBS_LOG_DIRECTORY: /data/logs/
+    healthcheck:
+      test: ['CMD', 'curl', '--fail', '--silent', 'http://localhost:9000/health']
+      interval: 1s
+      timeout: 5s
+      retries: 30
+      start_period: 2s
+    ports:
+      - '127.0.0.1:9000:9000'
+      - '127.0.0.1:9001:9001'
+    volumes:
+      - rustfs-data:/data
+
+volumes:
+  rustfs-data:

@@ -11,6 +11,9 @@
     "lint": "oxlint .",
     "lint:fix": "oxlint . --fix",
     "start": "next start",
+    "storage:down": "docker compose down",
+    "storage:logs": "docker compose logs --follow rustfs",
+    "storage:up": "docker compose up --detach --wait --wait-timeout 60 rustfs",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
@@ -39,5 +42,5 @@
     "node": "24.x",
     "pnpm": "11.22.0"
   },
-  "packageManager": "pnpm@11.22.0+sha512.H/hwxMYTPf2I+yr8Rt0T1H8JyXlLQ4xv20fKmMrzvBY4HuC+k6CRuOOCTPAfiJ9G19niCRD7C+GrD7W6qA3WIQ=="
+  "packageManager": "pnpm@11.22.0+sha512.1ff870c4c6133dfd88fb2afc46dd13d47f09c9794b438c6fdb47ca98caf3bc16381ee0be93a091b8e3824cf01f889f46d7d9e20910fb0be1ab0fb5baa80dd621"
 }
